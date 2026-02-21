@@ -23,4 +23,31 @@ stages:
       inputs:
        versionSpec: 6.1.0
       displayName: Installing Nuget packages
+    - task: NuGetCommand@2
+      inputs:
+        command: 'restore'
+        restoreSolution: '**/*.sln'
+        feedsToUse: 'select'
+      displayName: Restoring nuget packages
+    - task: VSBuild@1
+      inputs:
+        solution: '**\*.sln'
+        vsVersion: '17.0'
+        msbuildArgs: '/p:Configuration=Release /p:DeployOnBuild=true /p:WebPublishMethod=FileSystem /p:PublishDir=$(Build.ArtifactStagingDirectory)\'
+        platform: 'Any CPU'
+        configuration: 'Release'
+      displayName: Building the code
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'JWTAPI'
+        publishLocation: 'Container'
+        StoreAsTar: true        
+      displayName: publishing the artifacts
+    - task: CopyFiles@2
+      displayName: Copy Zip To Local Folder
+      inputs:
+        SourceFolder: '$(Build.ArtifactStagingDirectory)'
+        Contents: '**/*.zip'
+        TargetFolder: 'C:\Deployments\Blog'
 
