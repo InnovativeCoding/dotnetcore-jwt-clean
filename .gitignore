@@ -1,0 +1,95 @@
+############################
+## Build Results
+############################
+bin/
+obj/
+out/
+publish/
+TestResults/
+
+############################
+## Visual Studio
+############################
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+############################
+## Rider
+############################
+.idea/
+*.sln.iml
+
+############################
+## VS Code
+############################
+.vscode/
+
+############################
+## Logs
+############################
+*.log
+logs/
+npm-debug.log*
+
+############################
+## ASP.NET Core
+############################
+appsettings.Development.json
+appsettings.Local.json
+appsettings.*.local.json
+
+############################
+## User Secrets
+############################
+secrets.json
+
+############################
+## EF Core Migrations Snapshot (optional if team-managed)
+############################
+# Uncomment if you don’t want snapshot auto-generated diffs
+# *ModelSnapshot.cs
+
+############################
+## OS Files
+############################
+.DS_Store
+Thumbs.db
+
+############################
+## Docker
+############################
+docker-compose.override.yml
+
+############################
+## Node (if frontend inside same repo)
+############################
+node_modules/
+dist/
+build/
+
+############################
+## Publish Profiles
+############################
+Properties/PublishProfiles/
+
+############################
+## Coverage
+############################
+coverage/
+*.coverage
+*.coveragexml
+
+############################
+## NuGet
+############################
+*.nupkg
+packages/
+
+############################
+## Environment Variables
+############################
+.env
+.env.*

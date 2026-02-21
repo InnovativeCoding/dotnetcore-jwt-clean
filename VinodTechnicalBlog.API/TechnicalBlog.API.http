@@ -1,0 +1,6 @@
+@TechnicalBlog.API_HostAddress = http://localhost:5227
+
+GET {{TechnicalBlog.API_HostAddress}}/Blogs/
+Accept: application/json
+
+###
