@@ -42,7 +42,6 @@ stages:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
         ArtifactName: 'JWTAPI'
         publishLocation: 'Container'
-        StoreAsTar: true        
       displayName: publishing the artifacts
     - task: CopyFiles@2
       displayName: Copy Zip To Local Folder
