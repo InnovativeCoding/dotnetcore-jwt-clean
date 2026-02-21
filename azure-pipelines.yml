@@ -1,8 +1,3 @@
-# ASP.NET Core (.NET Framework)
-# Build and test ASP.NET Core projects targeting the full .NET Framework.
-# Add steps that publish symbols, save build artifacts, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
-
 trigger:
 - master
 
@@ -10,8 +5,6 @@ pool:
   name: MyAgentPool
 
 variables:
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
 stages:
@@ -19,34 +12,46 @@ stages:
   jobs:
   - job: CIWork
     steps:
-    - task: NuGetToolInstaller@1
+
+    # Install .NET SDK
+    - task: UseDotNet@2
+      displayName: Install .NET SDK
       inputs:
-       versionSpec: 6.1.0
-      displayName: Installing Nuget packages
-    - task: NuGetCommand@2
+        packageType: 'sdk'
+        version: '8.0.x'   # change if using 6 or 7
+
+    # Restore
+    - task: DotNetCoreCLI@2
+      displayName: Restore
       inputs:
         command: 'restore'
-        restoreSolution: '**/*.sln'
-        feedsToUse: 'select'
-      displayName: Restoring nuget packages
-    - task: VSBuild@1
+        projects: '**/*.sln'
+
+    # Build
+    - task: DotNetCoreCLI@2
+      displayName: Build
       inputs:
-        solution: '**\*.sln'
-        vsVersion: '17.0'
-        msbuildArgs: '/p:Configuration=Release /p:DeployOnBuild=true /p:WebPublishMethod=FileSystem /p:PublishDir=$(Build.ArtifactStagingDirectory)\'
-        platform: 'Any CPU'
-        configuration: 'Release'
-      displayName: Building the code
-    - task: PublishBuildArtifacts@1
+        command: 'build'
+        projects: '**/*.sln'
+        arguments: '--configuration $(buildConfiguration)'
+
+    # Publish API project only
+    - task: DotNetCoreCLI@2
+      displayName: Publish API
       inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-        ArtifactName: 'JWTAPI'
-        publishLocation: 'Container'
-      displayName: publishing the artifacts
+        command: 'publish'
+        projects: '**/TechnicalBlog.API.csproj'
+        arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+        zipAfterPublish: true
+
+    # Publish Artifact to Azure DevOps
+    - publish: $(Build.ArtifactStagingDirectory)
+      artifact: JWTAPI
+
+    # Copy zip to local deployment folder (self-hosted only)
     - task: CopyFiles@2
       displayName: Copy Zip To Local Folder
       inputs:
         SourceFolder: '$(Build.ArtifactStagingDirectory)'
         Contents: '**/*.zip'
         TargetFolder: 'C:\Deployments\Blog'
-
