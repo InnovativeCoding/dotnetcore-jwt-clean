@@ -15,12 +15,12 @@ variables:
   buildConfiguration: 'Release'
 
 stages:
-  - stage: CI-Part
-    jobs:
-      - job: CI
-        steps:
-          - task: NuGetToolInstaller@1
-            inputs:
-              versionSpec: 6.1.0
-            displayName: Installing Nuget packages
+- stage: CI
+  jobs:
+  - job: CIWork
+    steps:
+    - task: NuGetToolInstaller@1
+      inputs:
+       versionSpec: 6.1.0
+      displayName: Installing Nuget packages
 
