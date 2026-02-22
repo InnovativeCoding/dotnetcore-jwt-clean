@@ -41,7 +41,7 @@ stages:
       inputs:
         command: 'publish'
         projects: '**/TechnicalBlog.API.csproj'
-        arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+        arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory) /p:Version=$(build-version)'
         zipAfterPublish: true
 
     # Publish Artifact to Azure DevOps
