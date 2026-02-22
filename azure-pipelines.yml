@@ -1,3 +1,5 @@
+name: 1.2.$(Rev:r)
+
 trigger:
 - master
 
