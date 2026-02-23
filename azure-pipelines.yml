@@ -10,7 +10,7 @@ variables:
   buildConfiguration: 'Release'
 
 stages:
-- stage: CI
+- stage: BUILD
   jobs:
   - job: CIWork
     steps:
@@ -57,3 +57,49 @@ stages:
         SourceFolder: '$(Build.ArtifactStagingDirectory)'
         Contents: '**/*.zip'
         TargetFolder: 'C:\Deployments\Blog'
+
+- stage: CD
+  displayName: Deploy to IIS
+  dependsOn: Build
+  
+  jobs:
+    - deployment: IISDeploy
+      displayName: Deploy toOn Prem IIS
+      environment: Production
+      pool:
+        name: JWTAPIAppPool
+
+      strategy:
+       runOnce:
+        deploy:
+          steps:
+
+          - download: current
+            artifact: drop
+
+          # Stop App Pool
+          - task: PowerShell@2
+            displayName: Stop IIS App Pool
+            inputs:
+              targetType: inline
+              script: |
+                Import-Module WebAdministration
+                if (Test-Path IIS:\AppPools\JWTAPIAppPool) {
+                    Stop-WebAppPool -Name "JWTAPIAppPool"
+                }
+
+          # Extract ZIP
+          - task: ExtractFiles@1
+            inputs:
+              archiveFilePatterns: '$(Pipeline.Workspace)/drop/JWTAPI.zip'
+              destinationFolder: 'C:\inetpub\wwwroot\JWTAPI'
+              cleanDestinationFolder: true
+
+          # Start App Pool
+          - task: PowerShell@2
+            displayName: Start IIS App Pool
+            inputs:
+              targetType: inline
+              script: |
+                Import-Module WebAdministration
+                Start-WebAppPool -Name "JWTAPIAppPool" 
