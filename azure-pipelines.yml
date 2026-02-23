@@ -67,7 +67,7 @@ stages:
       displayName: Deploy toOn Prem IIS
       environment: Production
       pool:
-        name: JWTAPIAppPool
+        name: MyAgentPool
 
       strategy:
        runOnce:
